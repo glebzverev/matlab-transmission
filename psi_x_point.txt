@@ -1,0 +1,8 @@
+inverse task 
+psi_x_point = 0.014
+
+T15MD_imp_451_exp(36)_al110-6 (2).dat
+0.00733
+
+T15MD_imp_451_5840_al110-6.dat
+0.00673
