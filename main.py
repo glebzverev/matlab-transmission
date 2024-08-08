@@ -199,11 +199,10 @@ plt.ylim(-3.28 - 0.01, 2.411 + 0.01)
 plt.xlim(0.26 - 0.01, 3.32 + 0.01)
 # bag: special_contour_ax = special_contour.collections[0].set_label('-0.24811 inverse') don't show green line in legend because plot fake line below
 plt.plot([5, 6], [5, 8], label='-0.24811 inverse', color='g', linewidth=0.5)
-plt.legend(loc=(1.2, 1))
+plt.legend(loc=(1.25, 1))
 # special_contour_ax.legend()
 # plt.colorbar(contour, label='Уровень')
 # Создание сетки для координат x и y
 # X, Y = np.meshgrid(x, y)
 
 plt.show()
-fig.savefig('temp.png', dpi=fig.dpi, bbox_inches='tight')
