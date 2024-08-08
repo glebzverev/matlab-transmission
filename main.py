@@ -4,6 +4,10 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 from shapely.geometry import Polygon
 import geopandas as gpd
+import matplotlib as mpl
+
+mpl.rcParams['axes.spines.right'] = False
+mpl.rcParams['axes.spines.top'] = False
 
 # Load data
 data_t15 = np.loadtxt("T15MD_imp_898_1000_135_05_al110-4.dat")
@@ -51,7 +55,7 @@ for i in range(17, 28):
 
 pf_coils_df = pf_coils_df.drop(0,axis=1)
 pf_coils_df = pf_coils_df.drop([0,1],axis=0)
-print(pf_coils_df.head())
+# print(pf_coils_df.head())
 r_pf_coils = pf_coils_df.iloc[:, 0].to_numpy()
 z_pf_coils = pf_coils_df.iloc[:, 1].to_numpy()
 dr_pf_coils = pf_coils_df.iloc[:, 3].to_numpy()
@@ -90,7 +94,7 @@ for i in range(20):
         diaf[i, j] = float(diafragma_df.iloc[i, j])
 
 # Plotting
-plt.figure(2)
+fig = plt.figure(figsize=(12,12))
 plt.clf()
 plt.grid(True)
 plt.gca().set_aspect('equal', adjustable='box')
@@ -105,22 +109,22 @@ camera_patch.plot(ax=plt.gca(), color='m')
 for i in range(len(r_pf_coils)):
     color = 'b' if i != 3 and i!=8 else 'g'
     rect = Rectangle((r_pf_coils[i] - dr_pf_coils[i]/2, z_pf_coils[i] - dz_pf_coils[i]/2), 
-                     dr_pf_coils[i], dz_pf_coils[i], facecolor=color)
+                     dr_pf_coils[i], dz_pf_coils[i], facecolor=color, ec='black')
     plt.gca().add_patch(rect)
-    plt.text(pf_coils_cells.iloc[i+2, 1]+0.1, pf_coils_cells.iloc[i+2, 2], pf_coils_cells.iloc[i+2, 0], fontsize=8, ha='left')
-
+    plt.text(pf_coils_cells.iloc[i+2, 1]+pf_coils_cells.iloc[i+2, 4]/2+0.01, pf_coils_cells.iloc[i+2, 2], pf_coils_cells.iloc[i+2, 0], fontsize=10, ha='left', weight='medium', va='center')
+    
 # Plot probes
 for i in range(len(probes)):
     r_loc, z_loc = probes[i]
     rad = 0.02
-    rect = Rectangle((r_loc-rad, z_loc-rad), 2*rad, 2*rad, facecolor='black')
+    rect = Rectangle((r_loc-rad, z_loc-rad), 2*rad, 2*rad, facecolor='black', ec='black')
     plt.gca().add_patch(rect)
 
 # Plot sensors
 for i in range(len(sensors)):
     r_loc, z_loc = sensors[i]
     rad = 0.02
-    rect = Rectangle((r_loc-rad, z_loc-rad), 2*rad, 2*rad, facecolor='yellow')
+    rect = Rectangle((r_loc-rad, z_loc-rad), 2*rad, 2*rad, facecolor='yellow', ec='black')
     plt.gca().add_patch(rect)
 
 # Plot diaphragm
@@ -129,23 +133,23 @@ z_d = diaf[:, 1]
 plt.plot(r_d, z_d, 'black', linewidth=1.5)
 
 # Plot additional elements
-plt.gca().add_patch(Rectangle((0.776589-0.01, 0.880668), 0.02, 1.08082 - 0.880668, facecolor='c'))
-plt.gca().add_patch(Rectangle((0.776589-0.01, -1.0568), 0.02, abs(-0.848644 - -1.03278), facecolor='c'))
+plt.gca().add_patch(Rectangle((0.776589-0.01, 0.880668), 0.02, 1.08082 - 0.880668, facecolor='c', ec='black'))
+plt.gca().add_patch(Rectangle((0.776589-0.01, -1.0568), 0.02, abs(-0.848644 - -1.03278), facecolor='c', ec='black'))
 pgon = Polygon([(1.8259-0.01+0.01, -1.20091+0.01), (1.93747-0.01, -1.03278), 
                 (1.93747+0.01-0.01, -1.03278-0.01), (1.8259+0.01, -1.20091)])
 pgon_patch = gpd.GeoSeries([pgon])
-pgon_patch.plot(ax=plt.gca(), color='c')
+pgon_patch.plot(ax=plt.gca(), color='c', ec='black', lw=0.8)
 
 pgon = Polygon([(1.93747-0.01, 1.04079), (1.8259-0.01+0.01, 1.19291-0.01), 
                 (1.8259+0.01, 1.19291), (1.93747+0.01-0.01, 1.04079+0.01)])
 pgon_patch = gpd.GeoSeries([pgon])
-pgon_patch.plot(ax=plt.gca(), color='c')
+pgon_patch.plot(ax=plt.gca(), color='c', ec='black', lw=0.8)
 
 # Plot div_plast
 plt.gca().add_patch(Rectangle((r_div_plast[0], z_div_plast[0]-d_div_plast[0]/2), 
-                              r_div_plast[1]-r_div_plast[0], d_div_plast[0], facecolor=[0.7, 0.7, 0.7]))
+                              r_div_plast[1]-r_div_plast[0], d_div_plast[0], facecolor=[0.7, 0.7, 0.7], ec='black'))
 plt.gca().add_patch(Rectangle((r_div_plast[2], z_div_plast[2]-d_div_plast[2]/2), 
-                              r_div_plast[3]-r_div_plast[2], d_div_plast[2], facecolor=[0.7, 0.7, 0.7]))
+                              r_div_plast[3]-r_div_plast[2], d_div_plast[2], facecolor=[0.7, 0.7, 0.7], ec='black'))
 
 sep = 0.0285771
 x = -0.53256
@@ -170,15 +174,15 @@ z = data[1:, 1:]
 # Создание сетки для координат x и y
 X, Y = np.meshgrid(x, y)
 
-print(np.min(z), np.max(z))
+# print(np.min(z), np.max(z))
 # print(X,Y,z)
 
 
 # Установим порог
-special_level = -0.2481
+special_level = -0.24811
 
 # Определяем уровни для контуров, ниже порога
-levels = np.linspace(-1, special_level, 10)
+levels = np.linspace(-1, special_level, 19)[:-1]
 
 
 contour = plt.contour(X, Y, z, levels=levels, colors='y', linestyles='solid', linewidths=0.5)
@@ -186,11 +190,19 @@ special_contour = plt.contour(X, Y, z, levels=[special_level], colors='g', lines
 # plt.colorbar(contour)
 
 # plt.clabel(contour, inline=True, fontsize=8)
-plt.title('Контурные линии')
-plt.xlabel('X')
-plt.ylabel('Y')
+plt.title('T-15MD')
+plt.xlabel('R')
+plt.ylabel('Z')
+plt.xticks(np.arange(0, 4, 0.5))
+plt.yticks(np.arange(-3.5, 3.0, 0.5))
+plt.ylim(-3.28 - 0.01, 2.411 + 0.01)
+plt.xlim(0.26 - 0.01, 3.32 + 0.01)
+# bag: special_contour_ax = special_contour.collections[0].set_label('-0.24811 inverse') don't show green line in legend because plot fake line below
+plt.plot([5, 6], [5, 8], label='-0.24811 inverse', color='g', linewidth=0.5)
+plt.legend(loc=(1.25, 1))
+# special_contour_ax.legend()
 # plt.colorbar(contour, label='Уровень')
 # Создание сетки для координат x и y
-X, Y = np.meshgrid(x, y)
+# X, Y = np.meshgrid(x, y)
 
 plt.show()
